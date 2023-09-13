@@ -1,0 +1,19 @@
+services:
+  app:
+    image: reflector-app
+    build:
+      context: .
+      args:
+        API_URL: https://${DOMAIN:-localhost}
+
+  webserver:
+    environment:
+      DOMAIN: ${DOMAIN:-localhost}
+    ports:
+      - 443:443
+      - 80:80 # for acme-challenge via HTTP
+    build:
+      context: .
+      dockerfile: Caddy.Dockerfile
+    depends_on:
+      - app
